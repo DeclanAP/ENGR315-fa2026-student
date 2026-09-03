@@ -14,9 +14,18 @@ Note that Elon's capital will be $33B.
 
 ### all your code below ###
 
+import math
+
+Principal = 33000000000
+ShortInterest = 0.0396
+LongInterest = 0.0432
+
+print(Principal)
 
 # final answer for 10-year
-ten_year_final = None
+ten_year_final = Principal*math.pow((1+ShortInterest), 10)
+print(f"{ten_year_final:.2f}")
 
 # final answer for 20-year
-twenty_year_final = None
+twenty_year_final = Principal*math.pow((1+LongInterest), 20)
+print(f"{twenty_year_final:.2f}")
