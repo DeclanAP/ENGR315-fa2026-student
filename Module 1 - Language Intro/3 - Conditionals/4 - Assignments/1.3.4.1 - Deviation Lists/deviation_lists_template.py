@@ -27,6 +27,21 @@ random_list_B = random.sample(range(100), random_length)
 # set this variable equal to the list with the largest standard deviation
 # do not modify this variable's name, you can/should adjust the contents ;)
 # e.g. longest_list_is = myList
-longest_list_is = None
 
-### YOUR CODE HERE
+ListA_STD = np.std(random_list_A)
+ListB_STD = np.std(random_list_B)
+
+print(ListA_STD)
+print(ListB_STD)
+
+solution_list = []
+
+if ListA_STD > ListB_STD:
+    solution_list = random_list_A
+else: 
+    solution_list = random_list_B
+
+longest_list_is = solution_list
+
+print(longest_list_is)
+
