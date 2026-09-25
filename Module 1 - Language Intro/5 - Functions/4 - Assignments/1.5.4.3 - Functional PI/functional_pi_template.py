@@ -10,9 +10,34 @@ def my_pi(target_error):
     """
 
     ### YOUR CODE HERE ###
+    
+    # modify these lines to correct set the variable values
+    a = 1
+    b = 1/math.sqrt(2)
+    t = 0.25
+    p = 1
 
-    # change this so an actual value is returned
-    return 0
+    NewA: float
+    NewB: float
+    Newt: float
+    Newp: float
+
+    for i in range(1, 10):
+        NewA = (a+b)/2
+        NewB = math.sqrt(a*b)
+        Newp = 2*p
+        Newt = t - p*(NewA - a)**2
+
+        a = NewA
+        b = NewB
+        p = Newp
+        t = Newt
+
+        print("Loop Iteration: ", i)
+
+        pi_estimate = ((a+b)**2)/(4*t)
+
+    return pi_estimate
 
 
 

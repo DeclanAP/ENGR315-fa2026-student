@@ -1,7 +1,6 @@
 import random
 import numpy as np
 
-
 # copy in Dr. Forsyth's random list function for use
 def generate_random_int_list(list_length, upper_bound):
     # given the length above, sample the Natural Numbers up to upper_bound that many times
@@ -17,12 +16,15 @@ def dot_product(a,b):
     :param b: List B of values
     :return: The dot product as a value between a * b
     """
+    dotproduct = 0
+    
 
     ### YOUR CODE HERE ###
-
+    for i in range(0, fixed_length):
+        dotproduct += (vector_a[i]*vector_b[i])
 
     ### CHANGE THIS RETURN VALUE. IT IS HERE SO THE CODE DOES NOT ERROR
-    return None
+    return dotproduct
 
 """
 Step 1: Generate two "vectors" of equal length but full of random values
