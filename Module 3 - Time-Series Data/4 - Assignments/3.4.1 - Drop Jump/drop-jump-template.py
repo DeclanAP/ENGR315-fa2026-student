@@ -2,7 +2,6 @@ import numpy as np
 from os import path
 import scipy.constants as constants
 
-
 def main(full_path_to_file):
     """
     Given a file containing force plate drop jump data, find the first/second landings and take off point
@@ -33,10 +32,14 @@ def main(full_path_to_file):
     # Step 1: Establish a baseline by examining the force data the after for first ~20 points
 
     # set an amount of time to average and find the baseline
-    baseline_length = 0 ### your code here ###
+    baseline_length = 20 ###FIX
 
     # over the baseline, determine the average signal value
-    baseline = 0 ### your code here ###
+    baseline = sum(force_plate[0:baseline_length-1])/baseline_length  ###FIX
+
+    print(baseline)
+
+
 
     # Step 2: After the baseline, find the first point that rises above that value
     # given some acceptable delta
@@ -136,7 +139,7 @@ if __name__ == "__main__":
     filename = "FP1.txt"
 
     # load force plate data (this path may change based upon where you place this file in your project)
-    path_to_data_folder = "../../../data/drop-jump/force-plate/"
+    path_to_data_folder = r"C:\Users\Declan\Documents\GitHub\ENGR315-fa2026-student\data\drop-jump\force-plate\\"
 
     ### Do not modify below this line ###
 
