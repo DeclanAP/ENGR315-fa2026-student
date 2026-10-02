@@ -41,7 +41,7 @@ def main(full_path_to_file):
 
     # Step 1: Establish a baseline by the average of the first ~20 points
     baseline_data = force_plate[0:baseline_length]
-    baseline_avg = calculate_average(baseline_data)
+    baseline = calculate_average(baseline_data)
 
     # Step 2: After the baseline, find the first point that rises above that value
     # given some acceptable delta
@@ -62,7 +62,7 @@ def main(full_path_to_file):
         value = force_plate_list[index]
 
         # if signal is rising
-        if value > baseline_avg + delta:
+        if value > (baseline + delta):
             # mark this index as the landing point
             first_landing_index = index
 
@@ -72,7 +72,7 @@ def main(full_path_to_file):
     #### do not modify code below here ###
 
     # normalize the force plate data so that it will plot correctly when complete
-    signal = force_plate - baseline_avg
+    signal = force_plate - baseline
 
     return signal, first_landing_index
 

@@ -2,6 +2,14 @@ import numpy as np
 from os import path
 import scipy.constants as constants
 
+def calculate_average(data):
+    """
+    Calculate the sum of data stored in the list.
+    :param data: List of numbers
+    :return: Average value of list
+    """
+    return sum(data) / len(data)
+
 def main(full_path_to_file):
     """
     Given a file containing force plate drop jump data, find the first/second landings and take off point
@@ -35,9 +43,9 @@ def main(full_path_to_file):
     baseline_length = 20
 
     # over the baseline, determine the average signal value 
-    baseline_data_sum = sum(force_plate[0:(baseline_length-1)])
-    baseline_data_len = len(force_plate[0:(baseline_length-1)])
-    baseline = baseline_data_sum/baseline_data_len
+    baseline_data = force_plate[0:baseline_length]
+    baseline = calculate_average(baseline_data)
+
 
     print("baseline = ", baseline)
 
@@ -88,7 +96,7 @@ def main(full_path_to_file):
 
         value = force_plate_list[index]
 
-        if value < baseline - delta:
+        if value < (baseline + delta):
             take_off_index = index
             break
 
@@ -107,7 +115,7 @@ def main(full_path_to_file):
     for index in range(take_off_index + 10, len(force_plate_list)):
         value = force_plate_list[index]
         
-        if value > baseline + delta:
+        if value > (baseline + delta):
             second_landing_index = index
             break
                 
@@ -122,13 +130,16 @@ def main(full_path_to_file):
     # calculate tf and convert to seconds using the sampling rate
     time_of_flight = (second_landing_index - take_off_index) / sampling_rate
 
+    print("Time of contact: ", time_of_contact)
+    print("Time of flight: ", time_of_flight)
+
     # Step 6: Calculate the Reactive Strength Index
 
     # pull the local gravitational acceleration from scipy
     g = constants.g
 
     # RSI = (g*tf^2) / (8*tc)
-    RSI = (g*(time_of_contact**2)) / (8*time_of_flight)
+    RSI = (g*(time_of_flight**2)) / (8*time_of_contact)
 
     ### Do not modify below this line ###
 
