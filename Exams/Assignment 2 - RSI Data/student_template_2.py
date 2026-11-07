@@ -1,3 +1,8 @@
+from turtle import done
+
+import numpy as np
+from os import path
+from scipy.stats import ttest_rel
 """
 CULMINATING ASSIGNMENT 2: RSI
 
@@ -15,3 +20,21 @@ must be enabled in File > Preferences > Settings.
 
 See Canvas for additional requirements.
 """
+
+if __name__ == "__main__":
+    directorypath = "data/drop-jump/"
+    filename = "all_participant_data_rsi"
+    filepath = directorypath + filename + ".csv"
+
+    data = np.loadtxt(filepath, delimiter=',', skiprows=1, usecols=(1,2,3))
+
+    force_plate = data[:0]
+    accelerometer = data[:1]
+
+
+    ttest, pvalue = ttest_rel(force_plate, accelerometer)
+
+    print(ttest,pvalue)
+
+
+    print("done")
