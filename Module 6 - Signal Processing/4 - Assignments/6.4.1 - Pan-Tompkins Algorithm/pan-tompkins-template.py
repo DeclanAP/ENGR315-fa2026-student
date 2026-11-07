@@ -1,4 +1,6 @@
 import numpy as np
+from scipy.signal import find_peaks
+from scipy.signal import butter, sosfiltfilt
 from ekg_testbench import EKGTestBench
 
 def detect_heartbeats(filepath):
@@ -11,40 +13,62 @@ def detect_heartbeats(filepath):
     if filepath == '':
         return list()
 
+    fs = 360  # sampling frequency
+
     # import the CSV file using numpy
     path = filepath
 
     # load data in matrix from CSV file; skip first two rows
-    ## your code here
+    data = np.loadtxt(path, delimiter=',', skiprows=2)
 
     # save each vector as own variable
-    ## your code here
+    time = data[:, 0]
+    MLII = data[:, 1]
+    V5 = data[:, 2]
 
     # identify one column to process. Call that column signal
-
-    signal = -1 ## your code here
+    signal = V5
 
     # pass data through LOW PASS FILTER (OPTIONAL)
     ## your code here
+    sos_lp = butter(N=2, Wn=20, btype='low', fs=360, output='sos')
+    signal = sosfiltfilt(sos_lp, signal)
 
     # pass data through HIGH PASS FILTER (OPTIONAL) to create BAND PASS result
     ## your code here
+    sos_hp = butter(N=2, Wn=20, btype='high', fs=360, output='sos')
+    signal = sosfiltfilt(sos_hp, signal)
+
+    bandpassed = signal.copy()
+
 
     # pass data through differentiator
     ## your code here
+    signal = np.gradient(signal)
 
     # pass data through square function
     ## your code here
+    signal = np.square(signal)
 
     # pass through moving average window
     ## your code here
+    window = 54
+    ones = np.ones(window) / window  
+    signal = np.convolve(signal, ones, mode='same')  
 
     # use find_peaks to identify peaks within averaged/filtered data
     # save the peaks result and return as part of testbench result
+    signal = signal / np.max(signal)  # Normalize the signal to [0, 1] range
+    peaks, _ = find_peaks(signal, distance = 60, prominence=0.02)  # Example parameters; adjust as needed
 
-    ## your code here peaks,_ = find_peaks(....)
+    half = int(0.08 * fs)   # search +/- 80 ms
+    refined = []
+    for p in peaks:
+        lo = max(0, p - half)
+        hi = min(len(bandpassed), p + half)
+        refined.append(lo + np.argmax(np.abs(bandpassed[lo:hi])))
 
-    beats = None
+    beats = np.unique(refined)
 
     # do not modify this line
     return signal, beats
@@ -71,7 +95,8 @@ if __name__ == "__main__":
     ### DO NOT MODIFY BELOW THIS LINE!!! ###
 
     # path to ekg folder
-    path_to_folder = "../../../data/ekg/"
+    path_to_folder = r"C:\Users\Declan\Documents\GitHub\ENGR315-fa2026-student\data\ekg/"
+    
 
     # select a signal file to run
     signal_filepath = path_to_folder + database_name + ".csv"
