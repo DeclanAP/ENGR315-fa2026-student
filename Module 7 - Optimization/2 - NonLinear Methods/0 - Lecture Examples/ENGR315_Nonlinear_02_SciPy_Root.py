@@ -7,14 +7,15 @@ Run: python ENGR315_Nonlinear_02_SciPy_Root.py
 Requires: numpy, scipy
 """
 
+import math
 import numpy as np
 from scipy.optimize import root
 
 
 def tank_equations(dimensions):
     """Residuals for the water tank's diagonal and perimeter constraints."""
-    length, width = dimensions
-    return np.array([length**2 + width**2 - 25, length + width - 7], dtype=float)
+    Theta1, Theta2 = dimensions
+    return np.array([math.cos(np.deg2rad(Theta1)) + math.cos(np.deg2rad(Theta1+Theta2)) - 1, math.sin(np.deg2rad(Theta1)) + math.sin(np.deg2rad(Theta1+Theta2)) - 1], dtype=float)
 
 
 def show_solution(label, result):
@@ -33,7 +34,7 @@ def show_solution(label, result):
 
 
 if __name__ == "__main__":
-    initial_guess = [2.0, 4.0]
+    initial_guess = [0.8, 0.10]
 
     # The default root() method is "hybr" (modified Powell hybrid).
     hybrid = root(tank_equations, initial_guess, method="hybr")
@@ -44,7 +45,7 @@ if __name__ == "__main__":
     show_solution("2. SciPy: Broyden's first method", broyden)
 
     # Nonlinear equations may have multiple valid solutions.
-    other_guess = [4.0, 2.0]
+    other_guess = [0.5, 0.5]
     other_solution = root(tank_equations, other_guess, method="hybr")
     show_solution("3. Powell hybrid, different initial guess", other_solution)
 
