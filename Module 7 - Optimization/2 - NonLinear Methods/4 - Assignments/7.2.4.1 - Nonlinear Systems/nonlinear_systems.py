@@ -46,24 +46,20 @@ def newton_raphson(initial_guess, tolerance=1e-6, max_iterations=50):
                   f"{dimensions[1]:12.6f} | {error:14.8f}")
     
             if error < tolerance:
-                return dimensions, True
+                return dimensions
     
             if iteration == max_iterations:
-                break
+                raise RuntimeError("Solution Does Not coverge")
     
             # J * correction = -F : reuse np.linalg.solve from linear systems!
             jac = jacobian(dimensions)
             try:
                 correction = np.linalg.solve(jac, -res)
             except np.linalg.LinAlgError as exc:
-                raise ValueError(
-                    "Newton-Raphson cannot proceed: the Jacobian is singular. "
-                    "Try a different initial guess."
-                ) from exc
+                raise RuntimeError("Solution Does Not coverge") from exc
     
             dimensions = dimensions + correction
-    
-    return dimensions, False
+    raise RuntimeError("Solution Does Not coverge")
 
 
 def solve_scipy(initial_guess):
@@ -73,7 +69,11 @@ def solve_scipy(initial_guess):
     """
     # TODO (20 points): use root() to solve the system.
     hybrid = root(residuals, initial_guess, method="hybr")
-    return hybrid
+    solution = hybrid.x
+    complete = hybrid.success
+    if complete == False:
+        raise RuntimeError("Soltion does not converge")
+    return solution
 
 
 if __name__ == "__main__":
