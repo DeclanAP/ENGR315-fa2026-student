@@ -15,14 +15,17 @@ def residuals(dimensions):
     f1(x, y) = x**2 + y**2 - 41
     f2(x, y) = x + y - 9
     """
+    x, y = dimensions
     # TODO (20 points): implement the nonlinear equations.
-    return None
+    return np.array([x**2 + y**2 - 41, x + y - 9], dtype=float)
 
 
 def jacobian(dimensions):
     """Return a NumPy array of shape (2, 2) containing the Jacobian."""
     # TODO (20 points): implement the Jacobian matrix.
-    return None
+    x,y = dimensions
+    #J(x, y)  = [[2x, 2y], [1, 1]]
+    return np.array([[2 * x, 2 * y], [1.0, 1.0]], dtype=float)
 
 
 def newton_raphson(initial_guess, tolerance=1e-6, max_iterations=50):
@@ -33,7 +36,34 @@ def newton_raphson(initial_guess, tolerance=1e-6, max_iterations=50):
     does not converge within max_iterations, raise RuntimeError.
     """
     # TODO (40 points): implement the iterative Newton-Raphson algorithm.
-    return None
+    dimensions = np.array(initial_guess, dtype=float)
+    print("Iteration |   Length (m) |    Width (m) | Max |residual|")
+    print("-" * 59)
+    for iteration in range(max_iterations + 1):
+            res = residuals(dimensions)
+            error = np.max(np.abs(res))
+            print(f"{iteration:9d} | {dimensions[0]:12.6f} | "
+                  f"{dimensions[1]:12.6f} | {error:14.8f}")
+    
+            if error < tolerance:
+                return dimensions, True
+    
+            if iteration == max_iterations:
+                break
+    
+            # J * correction = -F : reuse np.linalg.solve from linear systems!
+            jac = jacobian(dimensions)
+            try:
+                correction = np.linalg.solve(jac, -res)
+            except np.linalg.LinAlgError as exc:
+                raise ValueError(
+                    "Newton-Raphson cannot proceed: the Jacobian is singular. "
+                    "Try a different initial guess."
+                ) from exc
+    
+            dimensions = dimensions + correction
+    
+    return dimensions, False
 
 
 def solve_scipy(initial_guess):
@@ -42,7 +72,8 @@ def solve_scipy(initial_guess):
     Check solution.success. Raise RuntimeError if the solver fails.
     """
     # TODO (20 points): use root() to solve the system.
-    return None
+    hybrid = root(residuals, initial_guess, method="hybr")
+    return hybrid
 
 
 if __name__ == "__main__":
