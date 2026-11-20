@@ -22,7 +22,7 @@ def direct_solve(_A, _b):
     :return: length-n numpy array of solution values
     """
     # Hint: use np.linalg.solve() as in lecture.
-    currents = np.linalg.solve(A, b)
+    currents = np.linalg.solve(_A, _b)
 
     # YOUR CODE HERE #
 
@@ -36,12 +36,8 @@ def verify_solution(_A, _b, _x):
              equal to A @ x and matches is a Python bool from np.allclose().
     """
     # Hint: use np.dot() and np.allclose() as in lecture.
-    currents = np.linalg.solve(_A, _b)
-    calculated_b = verified_b = np.dot(_A, _x)
-
+    calculated_b = np.dot(_A, _x)
     matches = np.allclose(calculated_b, _b)
-
-    calculated_b = np.dot(_A, currents)
 
     return calculated_b, matches
 
@@ -64,15 +60,14 @@ def jacobi_solve(_A, _b, _tolerance=0.001, _max_iterations=100):
     converged = None
 
     # YOUR CODE HERE #
-    I = np.zeros(5)  # Initial guess I1 = I2 = I3 = 0
+    I = np.zeros(len(_A[:,0]))  # Initial guess I1 = I2 = I3 = 0
     D = np.diag(_A)
     R = _A - np.diag(D)
 
     converged = False
     for k in range(1, _max_iterations + 1):
-        I_new = (b - np.dot(R, I)) / D
+        I_new = (_b - np.dot(R, I)) / D
         change = np.max(np.abs(I_new - I))
-        print(f'{k:9d} | {I_new[0]:8.4f} {I_new[1]:8.4f} {I_new[2]:8.4f} | {change:10.6f}')
         I = I_new
         if change < _tolerance:
             converged = True
@@ -92,8 +87,8 @@ def scipy_iterative_solve(_A, _b, _rtol=1e-5):
     info = None
 
     # YOUR CODE HERE #
-
-    return x, info
+    cg_currents, info = cg(_A, _b, _rtol)
+    return cg_currents, info
 
 
 if __name__ == "__main__":
